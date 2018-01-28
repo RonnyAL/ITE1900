@@ -3,30 +3,43 @@ import java.util.Arrays;
 public class Triangle extends GeometricObject {
 	private double side1, side2, side3;
 	
-	public static void main(String[] args) {
-		Triangle testTriangle = new Triangle();
-		System.out.println(testTriangle.toString());
-
-	}
-	
-	public Triangle() {
+//	public static void main(String[] args) {
+//		Triangle testTriangle = new Triangle();
+//		System.out.println(testTriangle.toString());
+//
+//	}
+//	
+	public Triangle() throws IllegalTriangleException {
 		this(1.0);
 	}
 
-	public Triangle(double side) {
+	public Triangle(double side) throws IllegalTriangleException {
 		this(side, side, side);
 	}
 	
-	public Triangle(double side1, double side2, double side3) {
-		this("White", false, side1, side2, side3);
-	}
-	
-	public Triangle(String color, boolean filled, double side1, double side2, double side3) {
-		super(color, filled);
+	public Triangle(double side1, double side2, double side3) throws IllegalTriangleException {
+		String errStr = "";
+		if (side1 < 0 || side2 < 0 || side3 < 0) {
+			errStr = "One side is negative!";
+		} else if (side1 >= side2+side3 || side2 >= side1+side3 || side3 >= side1+side2) {
+			errStr = "One side is larger than the other two combined!";
+		}
+		
+		if (errStr != "") {
+			throw new IllegalTriangleException(side1, side2, side3, String.format("%s%n", errStr));
+		}
+		
 		this.side1 = side1;
 		this.side2 = side2;
 		this.side3 = side3;
 	}
+	
+//	public Triangle(String color, boolean filled, double side1, double side2, double side3)  throws IllegalTriangleException {
+//		super(color, filled);
+//		this.side1 = side1;
+//		this.side2 = side2;
+//		this.side3 = side3;
+//	}
 	
 	//<getSides>
 	public double getSide1() {
