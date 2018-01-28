@@ -5,11 +5,6 @@
 *.class
 /bin/
 
-### Custom (user) ###
-# Leverte oppgaver
-/Levert/
-desktop.ini
-
 # Log file
 *.log
 
