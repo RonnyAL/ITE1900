@@ -2,8 +2,6 @@ package modul_2;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
@@ -12,7 +10,7 @@ public class RemoveStrings {
 
 	public static void main(String[] args) {
 		if (args.length < 2 || args[0] == null || args[1] == null) {
-			System.out.println("Missing arguments! Program will terminate.");
+			System.out.println("Missing arguments! Program will terminate.%n%n");
 			System.exit(1);
 		}
 		
@@ -20,37 +18,40 @@ public class RemoveStrings {
 		File sourceFile = new File(args[1]);
 
 		Scanner reader = null;
-		StringBuilder sb = new StringBuilder();
+		String s1 ="";
 		
 		try {
-			reader = new Scanner(sourceFile);
-			while (reader.hasNext()) {
-				sb.append(reader.nextLine());
-				sb.replace(sb.indexOf(stringToBeRemoved), stringToBeRemoved.length()-1, "ok");
+			reader = new Scanner(sourceFile, "UTF-8");
+			while (reader.hasNextLine()) {
+				s1 += reader.nextLine() + "\r\n";
 			}
 		} catch (FileNotFoundException e) {
-			System.out.printf("File \"%s\" not found. Program will terminate.", sourceFile);
+			System.out.printf("File \"%s\" not found! Program will terminate.%n%n", sourceFile);
 			e.printStackTrace();
 		}
-		
-		System.out.println(sb.toString());
 		
 		reader.close();
 	
+		PrintWriter writer = null;
 		try {
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(sourceFile), "UTF-8"));
-			writer.print(sb.toString());
-			writer.close();
-		} catch (UnsupportedEncodingException e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			writer = new PrintWriter(sourceFile, "UTF-8");
 		} catch (FileNotFoundException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			System.out.printf("Error: %s encoding not supported!%n%n", e.getMessage());
+			e.printStackTrace();
 		}
 		
-		System.out.println("Ferdig.");
+		s1 = s1.replaceAll(stringToBeRemoved, "");
+		writer.flush();
+		writer.print(s1);
+		writer.close();
+		
+		
+		System.out.printf("Successfully removed all instances of string \"%s\" from file %s.", stringToBeRemoved, sourceFile);
 
+		writer.close();
 		
 	}
 

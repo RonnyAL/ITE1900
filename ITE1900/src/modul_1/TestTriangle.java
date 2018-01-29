@@ -1,3 +1,5 @@
+package modul_1;
+
 import java.util.Scanner;
 
 public class TestTriangle extends Triangle {

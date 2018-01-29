@@ -1,3 +1,4 @@
+package modul_1;
 
 public class Triangle extends GeometricObject {
 	private double side1, side2, side3;
