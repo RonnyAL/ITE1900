@@ -10,7 +10,7 @@ public class RemoveStrings {
 
 	public static void main(String[] args) {
 		if (args.length < 2 || args[0] == null || args[1] == null) {
-			System.out.println("Missing arguments! Program will terminate.%n%n");
+			System.out.println("Missing arguments! Program will terminate.");
 			System.exit(1);
 		}
 		
@@ -18,12 +18,13 @@ public class RemoveStrings {
 		File sourceFile = new File(args[1]);
 
 		Scanner reader = null;
-		String s1 ="";
+		StringBuilder sb = new StringBuilder();
+		String lineBreak = System.getProperty("line.separator");
 		
 		try {
 			reader = new Scanner(sourceFile, "UTF-8");
 			while (reader.hasNextLine()) {
-				s1 += reader.nextLine() + "\r\n";
+				sb.append(reader.nextLine().replaceAll(stringToBeRemoved, "") + lineBreak);
 			}
 		} catch (FileNotFoundException e) {
 			System.out.printf("File \"%s\" not found! Program will terminate.%n%n", sourceFile);
@@ -36,19 +37,18 @@ public class RemoveStrings {
 		try {
 			writer = new PrintWriter(sourceFile, "UTF-8");
 		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
+			System.out.printf("Error: File \"%s\" not found!%n%n", sourceFile);
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
 			System.out.printf("Error: %s encoding not supported!%n%n", e.getMessage());
 			e.printStackTrace();
 		}
 		
-		s1 = s1.replaceAll(stringToBeRemoved, "");
 		writer.flush();
-		writer.print(s1);
+		writer.print(sb.toString());
 		writer.close();
 		
-		System.out.printf("Successfully removed all instances of string \"%s\" from file %s.", stringToBeRemoved, sourceFile);
+		System.out.printf("Successfully removed all instances of string \"%s\" from file \"%s\".", stringToBeRemoved, sourceFile);
 		
 	}
 
