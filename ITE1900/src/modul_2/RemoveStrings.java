@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class RemoveStrings {
 
 	public static void main(String[] args) {
-		if (args.length < 2 || args[0] == null || args[1] == null) {
+		if (args.length != 2 || args[0] == null || args[1] == null) {
 			System.out.println("Missing arguments! Program will terminate.");
 			System.exit(1);
 		}
