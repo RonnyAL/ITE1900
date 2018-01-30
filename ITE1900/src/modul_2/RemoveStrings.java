@@ -48,10 +48,7 @@ public class RemoveStrings {
 		writer.print(s1);
 		writer.close();
 		
-		
 		System.out.printf("Successfully removed all instances of string \"%s\" from file %s.", stringToBeRemoved, sourceFile);
-
-		writer.close();
 		
 	}
 
