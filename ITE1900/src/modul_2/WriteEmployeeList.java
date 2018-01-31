@@ -36,7 +36,7 @@ public class WriteEmployeeList {
 				i++;
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
+			System.out.printf("File not found!%n%n");
 			e.printStackTrace();
 		}
 		
