@@ -14,11 +14,12 @@ public class WriteEmployeeList {
 		rank[1] = "Associate";
 		rank[2] = "Manager";
 		
+		int i = 0;
+		
 		try (PrintWriter writer = new PrintWriter("EmployeeList.txt")) {
 			writer.printf("First name:\tLast name:\tRank:\t\tSalary:%n");
-			int i = 1;
 			String rankString;
-			while (i <= 1000) {
+			while (i < 1000) {
 				rankString = rank[(int)(Math.random()*3)];
 				switch(rankString) {
 				case "Assistant":
@@ -32,13 +33,17 @@ public class WriteEmployeeList {
 					break;
 				}
 				
-				writer.printf("Firstname%04d\tLastname%04d\t%-16s%d.00%n", i, i, rankString, salary);
 				i++;
+				writer.printf("Firstname%04d\tLastname%04d\t%-16s%d.00", i, i, rankString, salary);
+				if (i < 1000)
+					writer.println();
 			}
 		} catch (FileNotFoundException e) {
 			System.out.printf("File not found!%n%n");
 			e.printStackTrace();
 		}
+		
+		System.out.println(i + " employees added successfully!");
 		
 	}
 
