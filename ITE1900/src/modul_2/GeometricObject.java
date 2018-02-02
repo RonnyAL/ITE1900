@@ -1,4 +1,4 @@
-package modul_1;
+package modul_2;
 public class GeometricObject {
   private String color;
   private boolean filled;
@@ -61,6 +61,4 @@ public class GeometricObject {
   public String toString() {
     return String.format("Created on: %tF %1$tT %nColor: %s %nIs filled: %s", dateCreated, color, filled ? "yes": "no");
   }
-  
-
 }
