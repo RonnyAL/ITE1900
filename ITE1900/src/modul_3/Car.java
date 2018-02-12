@@ -7,30 +7,23 @@ public class Car extends Vehicle {
 	
 	Car() {}
 	
-	Car(String colour, String name, String serialNumber, int model, int price, int direction) {
-		super(colour, name, serialNumber, model, price, direction);
+	Car(String name, String colour, int price, int model, String serialNumber, int speed, int direction) {
+		super(name, colour, price, model, serialNumber, speed, direction);
+		productionDate = Calendar.getInstance();
 	}
 	
 	@Override
 	public void setAllFields() {
 		super.setAllFields();
-		System.out.println("Power: ");
+		System.out.print("Power: ");
 		this.power = input.nextInt();
-//		System.out.println("Production date: ");
-//		this.productionDate = ?
+		productionDate = Calendar.getInstance();
 	}
 	
-	public void turnRight(int degrees) {
-		if (degrees >= 0 && degrees <= 360) {
+	public void turn(int degrees) {
+		if (Math.abs(degrees) >= 0 && degrees <= 360) {
 			int newDirection = Math.floorMod(this.getDirection()+degrees, 360);
-			this.setDirection(newDirection);
-		}
-	}
-	
-	public void turnLeft(int degrees) {
-		if (degrees >= 0 && degrees <= 360) {
-			int newDirection = Math.floorMod(this.getDirection()-degrees, 360);
-			this.setDirection(newDirection);
+			setDirection(newDirection);
 		}
 	}
 
@@ -52,7 +45,7 @@ public class Car extends Vehicle {
 
 	@Override
 	public String toString() {
-		return super.toString() + "Car [power=" + power + ", productionDate=" + productionDate + "]";
+		return super.toString() + String.format("Power: %s | Production date: %s", power, df.format(productionDate.getTime()));
 	}
 	
 }

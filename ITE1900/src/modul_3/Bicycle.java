@@ -1,5 +1,4 @@
 package modul_3;
-
 import java.util.Calendar;
 
 public class Bicycle extends Vehicle {
@@ -9,25 +8,24 @@ public class Bicycle extends Vehicle {
 	
 	Bicycle() {}
 	
-	Bicycle(String colour, String name, String serialNumber, int model, int price, int direction) {
-		super(colour, name, serialNumber, model, price, direction);
+	Bicycle(String name, String colour, int price, int model, String serialNumber, int speed, int direction) {
+		super(name, colour, price, model, serialNumber, speed, direction);
+		productionDate = Calendar.getInstance();
 	}
 	
 	@Override
 	public void setAllFields() {
 		super.setAllFields();
-		System.out.println("Gears: ");
+		System.out.print("Gears: ");
 		this.gears = input.nextInt();
-//		System.out.println("Production date: ");
-//		this.productionDate = ?
+		productionDate = Calendar.getInstance();
 	}
 	
-	public void turnLeft(int degrees) {
-		
-	}
-	
-	public void turnRight(int degrees) {
-		
+	public void turn(int degrees) {
+		if (Math.abs(degrees) >= 0 && degrees <= 360) {
+			System.out.printf("Bicycle \"%s\" turns %s by %d degree%s.%n", this.getName(), 
+					degrees < 0 ? "left" : "right", Math.abs(degrees), degrees == 1 ? "" : "s");
+		}
 	}
 
 	public int getGears() {
@@ -48,7 +46,7 @@ public class Bicycle extends Vehicle {
 	
 	@Override
 	public String toString() {
-		return "Bicycle [gears=" + gears + ", productionDate=" + productionDate + "]";
+		return super.toString() + String.format("Gears: %s | Production date: %s", gears, df.format(productionDate.getTime()));
 	}
 	
 }
