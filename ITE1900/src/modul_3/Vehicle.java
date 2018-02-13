@@ -1,12 +1,14 @@
 package modul_3;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public abstract class Vehicle {
+public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	private String colour, name, serialNumber;
 	private int model, price, direction;
 	private double speed;
 	protected java.util.Scanner input = new java.util.Scanner(System.in);
 	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	private Calendar buyingDate;
 	
 	Vehicle() {}
 	
@@ -100,6 +102,14 @@ public abstract class Vehicle {
 		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
 				+ "%s | Serial number: %s | Direction: %s Speed: %s | ", 
 				name, colour, price, model, serialNumber, direction, speed);
+	}
+	
+	@Override
+	public int compareTo(Vehicle v) {
+		if (this.price > v.price)
+			return 1;
+		else
+			return -1;
 	}
 
 	

@@ -1,8 +1,6 @@
 package modul_3;
 import java.util.*;
 
-//test
-
 public class TestVehicles {
   ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
@@ -35,7 +33,8 @@ public class TestVehicles {
       System.out.println("3......................Find vehicle by name");
       System.out.println("4..............Show data about all vehicles");
       System.out.println("5.......Change direction of a given vehicle");
-      System.out.println("6..............................Exit program");
+      System.out.println("6.........................Test clone method");
+      System.out.println("7..............................Exit program");
       System.out.print(".............................Your choice? ");
 
       int choice = input.nextInt();
@@ -119,7 +118,11 @@ public class TestVehicles {
         	System.out.println();
         	break;
           
-        case 6: // Exit program
+        case 6:
+        	//TODO Stuff
+        	break;
+        	
+        case 7: // Exit program
           input.close();
           System.exit(0);
         default:
