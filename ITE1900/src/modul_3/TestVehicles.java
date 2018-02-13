@@ -119,7 +119,7 @@ public class TestVehicles {
         	System.out.println();
         	break;
           
-        case 6:
+        case 6: // Clone vehicle and test result
         	Car c1 = new Car("Nissan Skyline", "Blue", 220000, 2015, "ZF36132", 290, 0);
         	vehicles.add(c1);
         	
