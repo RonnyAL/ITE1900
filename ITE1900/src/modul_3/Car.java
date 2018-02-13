@@ -1,13 +1,13 @@
 package modul_3;
 import java.util.Calendar;
 
-public class Car extends Vehicle {
+public class Car extends Vehicle implements Cloneable {
 	private int power;
 	private Calendar productionDate;
 	
 	Car() {}
 	
-	Car(String name, String colour, int price, int model, String serialNumber, int speed, int direction) {
+	Car(String name, String colour, int price, int model, String serialNumber, double speed, int direction) {
 		super(name, colour, price, model, serialNumber, speed, direction);
 		productionDate = Calendar.getInstance();
 	}
@@ -41,6 +41,13 @@ public class Car extends Vehicle {
 
 	public void setProductionDate(Calendar productionDate) {
 		this.productionDate = productionDate;
+	}
+	
+	@Override
+	public Object clone() {
+		Car c = new Car(this.getName(), this.getColour(), this.getPrice(), this.getModel(), 
+				this.getSerialNumber(), this.getSpeed(), this.getDirection());
+		return c;
 	}
 
 	@Override

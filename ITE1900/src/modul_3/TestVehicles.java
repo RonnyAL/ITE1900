@@ -1,8 +1,10 @@
 package modul_3;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class TestVehicles {
   ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+  public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
   public static void main(String[] args) {
 	   
@@ -119,7 +121,23 @@ public class TestVehicles {
         	break;
           
         case 6:
-        	//TODO Stuff
+        	Car c1 = new Car("Nissan Skyline", "Blue", 220000, 2015, "ZF36132", 290, 0);
+        	vehicles.add(c1);
+        	
+        	Car c2 = (Car) c1.clone();
+    		Calendar tempCal = c2.getProductionDate();
+    		tempCal.set(Calendar.YEAR, tempCal.get(Calendar.YEAR)-5);
+    		c2.setProductionDate(tempCal);
+    		vehicles.add(c2);
+    		
+    		if(!c1.getProductionDate().equals(c2.getProductionDate())) {
+    			System.out.printf("%nDate objects are separate, deep copy.%nc1: "
+    					+ "%s%nc2: %s%n%n", df.format(c1.getProductionDate().getTime()), 
+    					df.format(c2.getProductionDate().getTime()));
+    		} else {
+    			System.out.printf("%nShallow copy!%n%n");
+    		}
+    		
         	break;
         	
         case 7: // Exit program

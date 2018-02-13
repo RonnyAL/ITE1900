@@ -12,7 +12,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	
 	Vehicle() {}
 	
-	Vehicle(String name, String colour, int price, int model, String serialNumber, int speed, int direction) {
+	Vehicle(String name, String colour, int price, int model, String serialNumber, double speed, int direction) {
 		this.name = name;
 		this.colour = colour;
 		this.serialNumber = serialNumber;
@@ -20,6 +20,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 		this.price = price;
 		this.direction = direction;
 		this.speed = 0;
+		buyingDate = Calendar.getInstance();
 	}
 	
 	public void setAllFields() {
@@ -98,19 +99,25 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	}
 
 	@Override
-	public String toString() {
-		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
-				+ "%s | Serial number: %s | Direction: %s Speed: %s | ", 
-				name, colour, price, model, serialNumber, direction, speed);
-	}
-	
-	@Override
 	public int compareTo(Vehicle v) {
 		if (this.price > v.price)
 			return 1;
 		else
 			return -1;
 	}
+	
+	public Object clone() throws CloneNotSupportedException {
+		return (Vehicle)super.clone();
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
+				+ "%s | Serial number: %s | Direction: %s Speed: %s | ", 
+				name, colour, price, model, serialNumber, direction, speed);
+	}
+	
+
 
 	
 }

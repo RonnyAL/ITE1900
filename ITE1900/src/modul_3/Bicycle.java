@@ -8,7 +8,7 @@ public class Bicycle extends Vehicle {
 	
 	Bicycle() {}
 	
-	Bicycle(String name, String colour, int price, int model, String serialNumber, int speed, int direction) {
+	Bicycle(String name, String colour, int price, int model, String serialNumber, double speed, int direction) {
 		super(name, colour, price, model, serialNumber, speed, direction);
 		productionDate = Calendar.getInstance();
 	}
@@ -42,6 +42,13 @@ public class Bicycle extends Vehicle {
 
 	public void setProductionDate(Calendar productionDate) {
 		this.productionDate = productionDate;
+	}
+	
+	@Override
+	public Object clone() {
+		Bicycle b = new Bicycle(this.getName(), this.getColour(), this.getPrice(), this.getModel(), 
+				this.getSerialNumber(), this.getSpeed(), this.getDirection());
+		return b;
 	}
 	
 	@Override
