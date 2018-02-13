@@ -97,6 +97,14 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	
+	public Calendar getBuyingDate() {
+		return buyingDate;
+	}
+	
+	public void setBuyingDate(Calendar buyingDate) {
+		this.buyingDate = buyingDate;
+	}
 
 	@Override
 	public int compareTo(Vehicle v) {

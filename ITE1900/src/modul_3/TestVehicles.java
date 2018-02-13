@@ -110,7 +110,6 @@ public class TestVehicles {
         				v.turn(turnDeg);
         			else if (turnDir == 'L')
         				v.turn(-turnDeg);
-        			
         		}
         	}
         	
@@ -125,15 +124,15 @@ public class TestVehicles {
         	vehicles.add(c1);
         	
         	Car c2 = (Car) c1.clone();
-    		Calendar tempCal = c2.getProductionDate();
+    		Calendar tempCal = c2.getBuyingDate();
     		tempCal.set(Calendar.YEAR, tempCal.get(Calendar.YEAR)-5);
     		c2.setProductionDate(tempCal);
     		vehicles.add(c2);
     		
     		if(!c1.getProductionDate().equals(c2.getProductionDate())) {
     			System.out.printf("%nDate objects are separate, deep copy.%nc1: "
-    					+ "%s%nc2: %s%n%n", df.format(c1.getProductionDate().getTime()), 
-    					df.format(c2.getProductionDate().getTime()));
+    					+ "%s%nc2: %s%n%n", df.format(c1.getBuyingDate().getTime()), 
+    					df.format(c2.getBuyingDate().getTime()));
     		} else {
     			System.out.printf("%nShallow copy!%n%n");
     		}
