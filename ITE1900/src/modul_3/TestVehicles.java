@@ -130,13 +130,13 @@ public class TestVehicles {
 			c2 = (Car) c1.clone();
 			Calendar tempCal = c2.getBuyingDate();
     		tempCal.set(Calendar.YEAR, tempCal.get(Calendar.YEAR)-5);
-    		c2.setProductionDate(tempCal);
+    		c2.setBuyingDate(tempCal);
     		vehicles.add(c2);
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
     		
-		if(!c1.getProductionDate().equals(c2.getProductionDate())) {
+		if(!c1.getBuyingDate().equals(c2.getBuyingDate())) {
 			System.out.printf("%nDate objects are separate, deep copy.%nc1: "
 					+ "%s%nc2: %s%n%n", df.format(c1.getBuyingDate().getTime()), 
 					df.format(c2.getBuyingDate().getTime()));

@@ -53,7 +53,8 @@ public class Bicycle extends Vehicle {
 	
 	@Override
 	public String toString() {
-		return super.toString() + String.format("Gears: %s | Production date: %s", gears, df.format(productionDate.getTime()));
+		return super.toString() + String.format("Gears: %s | Production date: %s | Buying date: %s", 
+				gears, df.format(productionDate.getTime()), df.format(buyingDate.getTime()));
 	}
 	
 }

@@ -8,7 +8,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	private double speed;
 	protected java.util.Scanner input = new java.util.Scanner(System.in);
 	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	private Calendar buyingDate;
+	protected Calendar buyingDate;
 	
 	Vehicle() {}
 	
