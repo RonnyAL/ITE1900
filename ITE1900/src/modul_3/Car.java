@@ -44,9 +44,9 @@ public class Car extends Vehicle implements Cloneable {
 	}
 	
 	@Override
-	public Object clone() {
-		Car c = new Car(this.getName(), this.getColour(), this.getPrice(), this.getModel(), 
-				this.getSerialNumber(), this.getSpeed(), this.getDirection());
+	public Object clone() throws CloneNotSupportedException {
+		Car c = (Car) super.clone();
+		c.productionDate = ( Calendar ) productionDate.clone();
 		return c;
 	}
 

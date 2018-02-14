@@ -114,9 +114,12 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 			return -1;
 	}
 	
-	public Object clone() throws CloneNotSupportedException {
-		return (Vehicle)super.clone();
-	}
+	  @Override
+	  public Object clone() throws CloneNotSupportedException {
+	    Vehicle v = ( Vehicle ) super.clone();
+	    v.buyingDate = (Calendar) buyingDate.clone();
+	    return v;
+	  }
 	
 	@Override
 	public String toString() {
