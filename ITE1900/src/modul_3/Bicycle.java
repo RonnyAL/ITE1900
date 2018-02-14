@@ -57,4 +57,16 @@ public class Bicycle extends Vehicle {
 				gears, df.format(productionDate.getTime()), df.format(buyingDate.getTime()));
 	}
 	
+	@Override
+	public void accelerate(int speedFactor) {
+		setSpeed(this.getSpeed() == 0 ? 0.3*speedFactor : Math.min(MAX_SPEED_BIKE, this.getSpeed()*speedFactor));
+		System.out.printf("%s \"%s\" accelerates to %s km/h%n", this.getClass().getSimpleName(), this.getName(), this.getSpeed());
+	}
+
+	@Override
+	public void breaks(int speedFactor) {
+		this.setSpeed(this.getSpeed()/(speedFactor*0.5));
+		System.out.printf("%s \"%s\" decelerates to %.1f km/h%n", this.getClass().getSimpleName(), this.getName(), this.getSpeed());
+	}
+	
 }

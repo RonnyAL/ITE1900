@@ -55,5 +55,17 @@ public class Car extends Vehicle implements Cloneable {
 		return super.toString() + String.format("Power: %s | Production date: %s | Buying date: %s", 
 				power, df.format(productionDate.getTime()), df.format(buyingDate.getTime()));
 	}
+
+	@Override
+	public void accelerate(int speedFactor) {
+		setSpeed(this.getSpeed() == 0 ? 0.5*speedFactor : Math.min(MAX_SPEED_CAR, this.getSpeed()*speedFactor));
+		System.out.printf("%s \"%s\" accelerates to %s km/h%n", this.getClass().getSimpleName(), this.getName(), this.getSpeed());
+	}
+
+	@Override
+	public void breaks(int speedFactor) {
+		this.setSpeed(this.getSpeed()/speedFactor);
+		System.out.printf("%s \"%s\" decelerates to %s km/h%n", this.getClass().getSimpleName(), this.getName(), this.getSpeed());
+	}
 	
 }
