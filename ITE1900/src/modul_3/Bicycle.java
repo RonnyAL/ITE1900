@@ -45,10 +45,10 @@ public class Bicycle extends Vehicle {
 	}
 	
 	@Override
-	public Object clone() {
-		Bicycle b = new Bicycle(this.getName(), this.getColour(), this.getPrice(), this.getModel(), 
-				this.getSerialNumber(), this.getSpeed(), this.getDirection());
-		return b;
+	public Object clone() throws CloneNotSupportedException {
+		Bicycle c = (Bicycle) super.clone();
+		c.productionDate = ( Calendar ) productionDate.clone();
+		return c;
 	}
 	
 	@Override

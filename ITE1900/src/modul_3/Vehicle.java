@@ -26,15 +26,15 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 	public void setAllFields() {
 		System.out.print("Name: ");
 		this.name = input.nextLine();
-		System.out.printf("Colour: ");
+		System.out.print("Colour: ");
 		this.colour = input.nextLine();
-		System.out.printf("Price: ");
+		System.out.print("Price: ");
 		this.price = input.nextInt();
-		System.out.printf("Model: ");
+		System.out.print("Model: ");
 		this.model = input.nextInt();
-		System.out.printf("Serial number: ");
+		System.out.print("Serial number: ");
+		input.nextLine(); // Consume newline
 		this.serialNumber = input.nextLine();
-		input.next();
 	}
 	
 	
