@@ -34,7 +34,8 @@ public class TestVehicles {
 			System.out.println("4..............Show data about all vehicles");
 			System.out.println("5.......Change direction of a given vehicle");
 			System.out.println("6.........................Test clone method");
-			System.out.println("7..............................Exit program");
+			System.out.println("7..................Test driveable interface");
+			System.out.println("8..............................Exit program");
 			System.out.print(".............................Your choice? ");
 			
 			int choice = input.nextInt();
@@ -146,7 +147,29 @@ public class TestVehicles {
 		
 		break;
         	
-        case 7: // Exit program
+        case 7:
+        	Car c3 = new Car("Nissan Micra", "Turquoise", 35000, 2001, "XD69420", 0, 0);
+        	Bicycle b1 = new Bicycle("DBS Intruder FX6", "Black", 3999, 2018, "YMD161xx01", 0, 0);
+        	
+        	System.out.println();
+        	
+        	c3.accelerate(10);
+        	c3.accelerate(1000);
+        	c3.breaks(1000);
+        	c3.stop();
+
+        	System.out.println();
+        	
+        	b1.accelerate(10);
+        	b1.accelerate(1000);
+        	b1.breaks(1000);
+        	b1.stop();
+        	
+        	System.out.println();
+        	
+        	break;
+		
+        case 8: // Exit program
         	input.close();
         	System.exit(0);
         

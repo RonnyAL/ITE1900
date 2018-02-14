@@ -2,7 +2,7 @@ package modul_3;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
+public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveable{
 	private String colour, name, serialNumber;
 	private int model, price, direction;
 	private double speed;
@@ -126,6 +126,11 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable{
 		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
 				+ "%s | Serial number: %s | Direction: %s Speed: %s | ", 
 				name, colour, price, model, serialNumber, direction, speed);
+	}
+	
+	public void stop() {
+		this.speed = 0;
+		System.out.printf("%s \"%s\" stops%n", this.getClass().getSimpleName(), this.getName());
 	}
 	
 
