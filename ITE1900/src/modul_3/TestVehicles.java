@@ -1,4 +1,6 @@
 package modul_3;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -171,7 +173,21 @@ public class TestVehicles {
 		
         case 8: // Exit program
         	input.close();
+        	
+        	try (PrintWriter writer = new PrintWriter("VehicleList.txt")) {
+        		System.out.println();
+        		for (Vehicle v : vehicles) {
+            		v.writeData(writer);
+            		System.out.printf("Vehicle written to file: %s%n", v.toString());
+            	}
+        	} catch (FileNotFoundException e) {
+				System.out.println("Error writing to file. Check permissions!");
+				e.printStackTrace();
+			}
+        	
         	System.exit(0);
+        	
+        	
         
         default: // Invalid input
         	System.out.println("Invalid option!");

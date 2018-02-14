@@ -1,5 +1,9 @@
 package modul_3;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.Scanner;
 
 public class Bicycle extends Vehicle {
 
@@ -67,6 +71,20 @@ public class Bicycle extends Vehicle {
 	public void breaks(int speedFactor) {
 		this.setSpeed(this.getSpeed()/(speedFactor*0.5));
 		System.out.printf("%s \"%s\" decelerates to %.1f km/h%n", this.getClass().getSimpleName(), this.getName(), this.getSpeed());
+	}
+
+	@Override
+	public void writeData(PrintWriter p) throws FileNotFoundException {
+		super.writeData(p);
+		p.printf("%s,%s,%s%s", gears, df.format(getProductionDate().getTime()), 
+				df.format(super.getBuyingDate().getTime()), LINE_SEPARATOR);
+		
+	}
+
+	@Override
+	public void readData(Scanner in) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

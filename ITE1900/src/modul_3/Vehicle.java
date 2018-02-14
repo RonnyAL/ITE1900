@@ -1,14 +1,18 @@
 package modul_3;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Scanner;
 
-public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveable{
+public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveable, Fileable {
 	private String colour, name, serialNumber;
 	private int model, price, direction;
 	private double speed;
-	protected java.util.Scanner input = new java.util.Scanner(System.in);
+	protected java.util.Scanner input = new Scanner(System.in);
 	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	protected Calendar buyingDate;
+	public static final String LINE_SEPARATOR = System.lineSeparator();
 	
 	Vehicle() {}
 	
@@ -124,7 +128,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 	@Override
 	public String toString() {
 		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
-				+ "%s | Serial number: %s | Direction: %s Speed: %s | ", 
+				+ "%s | Serial number: %s | Direction: %s | Speed: %s | ", 
 				name, colour, price, model, serialNumber, direction, speed);
 	}
 	
@@ -133,7 +137,14 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		System.out.printf("%s \"%s\" stops%n", this.getClass().getSimpleName(), this.getName());
 	}
 	
-
+	public void writeData(PrintWriter p) throws FileNotFoundException {
+    	p.printf("%s,%s,%s,%s,%s,%s,%s,%s", this.getClass().getSimpleName(), name, colour, price, 
+    			model, serialNumber, direction, speed);
+	}
+	
+	public void readData(Scanner s) {
+		
+	}
 
 	
 }
