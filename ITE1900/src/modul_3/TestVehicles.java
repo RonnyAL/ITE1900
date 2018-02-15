@@ -171,9 +171,9 @@ public class TestVehicles {
         	
         	break;
 		
-        case 8: // Exit program
+        case 9: // Exit program
         	input.close();
-        	
+        	Collections.sort(vehicles);
         	try (PrintWriter writer = new PrintWriter("VehicleList.txt")) {
         		System.out.println();
         		for (Vehicle v : vehicles) {
