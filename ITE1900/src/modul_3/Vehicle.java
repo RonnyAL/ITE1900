@@ -41,6 +41,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		System.out.print("Serial number: ");
 		input.nextLine(); // Consume newline
 		this.serialNumber = input.nextLine();
+		buyingDate = Calendar.getInstance();
 	}
 
 	// public abstract void turnLeft(int degrees);
@@ -146,6 +147,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 	public void readData(Scanner s) {
 		while (s.hasNextLine()) {
 			try { TestVehicles.vehicles.add(Vehicle.fromString(s.nextLine()));
+			System.out.println(TestVehicles.vehicles.get(TestVehicles.vehicles.size()-1).toString());
 		}
 			catch (Exception e) {System.out.println("Too bad, so sad");
 	}}

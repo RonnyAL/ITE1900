@@ -12,6 +12,7 @@ public class TestVehicles {
 	public static void main(String[] args) {
 		TestVehicles vtest = new TestVehicles();
 		try (Scanner s = new Scanner(new File("VehicleList.txt"));){
+			System.out.println("Vehicles read from file:");
 			new Car().readData(s);
 		}
 		catch (FileNotFoundException fnf) { System.out.println("No save as of yet!");
@@ -58,7 +59,7 @@ public class TestVehicles {
 			case 1: // New car
 				System.out.printf("%nInput car data:%n");
 				vehicle = new Car();
-				vehicle.setAllFields();
+				((Car)vehicle).setAllFields();
 				vehicles.add(vehicle);
 				System.out.println();
 				break;
