@@ -1,8 +1,10 @@
 package modul_3;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveable, Fileable {
@@ -10,12 +12,13 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 	private int model, price, direction;
 	private double speed;
 	protected java.util.Scanner input = new Scanner(System.in);
-	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	public static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	protected Calendar buyingDate;
 	public static final String LINE_SEPARATOR = System.lineSeparator();
-	
-	Vehicle() {}
-	
+
+	Vehicle() {
+	}
+
 	Vehicle(String name, String colour, int price, int model, String serialNumber, double speed, int direction) {
 		this.name = name;
 		this.colour = colour;
@@ -26,7 +29,7 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		this.speed = 0;
 		buyingDate = Calendar.getInstance();
 	}
-	
+
 	public void setAllFields() {
 		System.out.print("Name: ");
 		this.name = input.nextLine();
@@ -40,10 +43,9 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		input.nextLine(); // Consume newline
 		this.serialNumber = input.nextLine();
 	}
-	
-	
-//	public abstract void turnLeft(int degrees);
-//	public abstract void turnRight(int degrees);
+
+	// public abstract void turnLeft(int degrees);
+	// public abstract void turnRight(int degrees);
 	public abstract void turn(int degrees);
 
 	public String getColour() {
@@ -101,11 +103,11 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
-	
+
 	public Calendar getBuyingDate() {
 		return buyingDate;
 	}
-	
+
 	public void setBuyingDate(Calendar buyingDate) {
 		this.buyingDate = buyingDate;
 	}
@@ -117,34 +119,56 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		else
 			return -1;
 	}
-	
-	  @Override
-	  public Object clone() throws CloneNotSupportedException {
-	    Vehicle v = ( Vehicle ) super.clone();
-	    v.buyingDate = (Calendar) buyingDate.clone();
-	    return v;
-	  }
-	
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Vehicle v = (Vehicle) super.clone();
+		v.buyingDate = (Calendar) buyingDate.clone();
+		return v;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("Name: %s | Colour: %s | Price: %s | Model: "
-				+ "%s | Serial number: %s | Direction: %s | Speed: %s | ", 
+		return String.format(
+				"Name: %s | Colour: %s | Price: %s | Model: " + "%s | Serial number: %s | Direction: %s | Speed: %s | ",
 				name, colour, price, model, serialNumber, direction, speed);
 	}
-	
+
 	public void stop() {
 		this.speed = 0;
 		System.out.printf("%s \"%s\" stops%n", this.getClass().getSimpleName(), this.getName());
 	}
-	
+
 	public void writeData(PrintWriter p) throws FileNotFoundException {
-    	p.printf("%s,%s,%s,%s,%s,%s,%s,%s", this.getClass().getSimpleName(), name, colour, price, 
-    			model, serialNumber, direction, speed);
-	}
-	
-	public void readData(Scanner s) {
-		
+		p.printf("%s,%s,%s,%s,%s,%s,%s,%s", this.getClass().getSimpleName(), name, colour, price, model, serialNumber,
+				direction, speed);
 	}
 
-	
+	public void readData(Scanner s) {
+		// Får inn
+	}
+
+	private static Vehicle fromString(String str) throws Exception {
+		String[] strList = str.split(",");
+		Calendar bd = Calendar.getInstance();
+		Calendar pd = Calendar.getInstance();
+		pd.setTime(df.parse(strList[8]));
+		bd.setTime(df.parse(strList[9]));
+		
+		if (strList[0].equals("Car")) {
+			Vehicle v = new Car(strList[1], strList[2], Integer.parseInt(strList[3]), Integer.parseInt(strList[4]),
+					strList[5], Double.parseDouble(strList[7]), Integer.parseInt(strList[6]));
+					((Car)v).setProductionDate(pd);
+					v.setBuyingDate(bd);
+			return v;
+		} else if (strList[0].equals("Bicycle")) {
+			Vehicle v = new Bicycle(strList[1], strList[2], Integer.parseInt(strList[3]), Integer.parseInt(strList[4]),
+					strList[5], Double.parseDouble(strList[7]), Integer.parseInt(strList[6]));
+
+			return v;
+		} else {
+			throw new Exception("Error in save file!");
+		}
+	}
+
 }
