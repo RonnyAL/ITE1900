@@ -1,6 +1,5 @@
 package modul_3;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -46,6 +45,9 @@ public class Car extends Vehicle implements Cloneable {
 	public void setProductionDate(Calendar productionDate) {
 		this.productionDate = productionDate;
 	}
+	public void readData(Scanner s) {
+		super.readData(s);
+	}
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
@@ -77,12 +79,6 @@ public class Car extends Vehicle implements Cloneable {
 		super.writeData(p);
 		p.printf("%s,%s,%s%s", power, df.format(getProductionDate().getTime()), 
 				df.format(super.getBuyingDate().getTime()), LINE_SEPARATOR);
-	}
-
-	@Override
-	public void readData(Scanner in) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

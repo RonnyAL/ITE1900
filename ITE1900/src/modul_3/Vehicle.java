@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveable, Fileable {
@@ -140,12 +139,16 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 	}
 
 	public void writeData(PrintWriter p) throws FileNotFoundException {
-		p.printf("%s,%s,%s,%s,%s,%s,%s,%s", this.getClass().getSimpleName(), name, colour, price, model, serialNumber,
+		p.printf("%s,%s,%s,%s,%s,%s,%s,%s", this.getClass().getName(), name, colour, price, model, serialNumber,
 				direction, speed);
 	}
 
 	public void readData(Scanner s) {
-		// Får inn
+		while (s.hasNextLine()) {
+			try { TestVehicles.vehicles.add(Vehicle.fromString(s.nextLine()));
+		}
+			catch (Exception e) {System.out.println("Too bad, so sad");
+	}}
 	}
 
 	private static Vehicle fromString(String str) throws Exception {
@@ -155,13 +158,13 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		pd.setTime(df.parse(strList[8]));
 		bd.setTime(df.parse(strList[9]));
 		
-		if (strList[0].equals("Car")) {
+		if (strList[0].equals("modul_3.Car")) {
 			Vehicle v = new Car(strList[1], strList[2], Integer.parseInt(strList[3]), Integer.parseInt(strList[4]),
 					strList[5], Double.parseDouble(strList[7]), Integer.parseInt(strList[6]));
 					((Car)v).setProductionDate(pd);
 					v.setBuyingDate(bd);
 			return v;
-		} else if (strList[0].equals("Bicycle")) {
+		} else if (strList[0].equals("modul_3.Bicycle")) {
 			Vehicle v = new Bicycle(strList[1], strList[2], Integer.parseInt(strList[3]), Integer.parseInt(strList[4]),
 					strList[5], Double.parseDouble(strList[7]), Integer.parseInt(strList[6]));
 

@@ -1,15 +1,21 @@
 package modul_3;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class TestVehicles {
-	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+	public static  ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 	public SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
 	public static void main(String[] args) {
 		TestVehicles vtest = new TestVehicles();
+		try (Scanner s = new Scanner(new File("VehicleList.txt"));){
+			new Car().readData(s);
+		}
+		catch (FileNotFoundException fnf) { System.out.println("No save as of yet!");
+}
 		try {
 			vtest.menuLoop();
 		} catch (InputMismatchException e) {
@@ -23,11 +29,12 @@ public class TestVehicles {
 	private void menuLoop() throws InputMismatchException {
 		Scanner input = new Scanner(System.in);
 		Vehicle vehicle;
-		
+		if (vehicles.isEmpty()) {
 		vehicles.add(new Car("Volvo 740", "blue", 85000, 1985, "1010-11", 0, 120));
 		vehicles.add(new Car("Ferrari Testarossa", "red", 1200000, 1996, "A112", 0, 350));
 		vehicles.add(new Bicycle("Monark 1", "yellow", 4000, 1993, "BC100", 0, 10));
-		vehicles.add(new Bicycle("DBS 2", "pink", 5000, 1994, "42", 0, 10));
+		vehicles.add(new Bicycle("DBS 2", "pink", 5000, 1994, "42", 0, 10));}
+		
 		
 		while (true) {
 			System.out.println("1...................................New car");
@@ -171,7 +178,7 @@ public class TestVehicles {
         	
         	break;
 		
-        case 9: // Exit program
+        case 8: // Exit program
         	input.close();
         	Collections.sort(vehicles);
         	try (PrintWriter writer = new PrintWriter("VehicleList.txt")) {
