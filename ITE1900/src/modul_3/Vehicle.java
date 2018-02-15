@@ -44,8 +44,6 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		buyingDate = Calendar.getInstance();
 	}
 
-	// public abstract void turnLeft(int degrees);
-	// public abstract void turnRight(int degrees);
 	public abstract void turn(int degrees);
 
 	public String getColour() {
