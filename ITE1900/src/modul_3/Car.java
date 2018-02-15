@@ -59,7 +59,9 @@ public class Car extends Vehicle implements Cloneable {
 	@Override
 	public String toString() {
 		return super.toString() + String.format("Power: %s | Production date: %s | Buying date: %s", 
-				power, df.format(productionDate.getTime()), df.format(buyingDate.getTime()));
+				power,
+				df.format(productionDate.getTime()),
+				df.format(super.getBuyingDate().getTime()));
 	}
 
 	@Override

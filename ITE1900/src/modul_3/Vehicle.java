@@ -41,10 +41,9 @@ public abstract class Vehicle implements Comparable<Vehicle>, Cloneable, Driveab
 		System.out.print("Serial number: ");
 		input.nextLine(); // Consume newline
 		this.serialNumber = input.nextLine();
+		buyingDate = Calendar.getInstance();
 	}
 
-	// public abstract void turnLeft(int degrees);
-	// public abstract void turnRight(int degrees);
 	public abstract void turn(int degrees);
 
 	public String getColour() {
