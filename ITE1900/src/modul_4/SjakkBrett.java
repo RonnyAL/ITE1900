@@ -3,8 +3,8 @@ package modul_4;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -13,29 +13,37 @@ public class SjakkBrett extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		Group root = new Group();
-        Scene scene = new Scene(root, 500, 500, Color.BLACK);
+		
+        int boardSize = 8; // Definerer antall kolonner og rader.
+        int squareSize = 40; // Definerer hver rutes høyde/bredde (i piksler).
+		
+		Pane pane = new Pane();
+		Group group = new Group();
+        Scene scene = new Scene(pane, boardSize*squareSize, boardSize*squareSize);
 
-        //Filled rectangle
-        Rectangle rect1 = new Rectangle(10, 10, 200, 200);
-        rect1.setFill(Color.BLUE);
+        Rectangle rect = null;
 
-        //Transparent rectangle with Stroke
-        Rectangle rect2 = new Rectangle(60, 60, 200, 200);
-        rect2.setFill(Color.TRANSPARENT);
-        rect2.setStroke(Color.RED);
-        rect2.setStrokeWidth(10);
+        for (int c = 0; c < boardSize; c++) {
+        	for (int r = 0; r < boardSize; r++) {
+        		rect = new Rectangle(squareSize*c, squareSize*r, squareSize, squareSize);
 
-        //Rectangle with Stroke, no Fill color specified
-        Rectangle rect3 = new Rectangle(110, 110, 200, 200);
-        rect3.setStroke(Color.GREEN);
-        rect3.setStrokeWidth(10);
+        		if (c % 2 == r % 2)
+        			rect.setFill(Color.WHITE);
+        		else
+        			rect.setFill(Color.BLACK);
+        		
+        		group.getChildren().add(rect);
+        	}
+        }
 
-        root.getChildren().addAll(rect1, rect2, rect3);
-
-        primaryStage.setTitle("java-buddy.blogspot.com");
+        pane.getChildren().add(group);
+        
+        primaryStage.setTitle("Sjakkbrett");
+        primaryStage.setResizable(false);
+        primaryStage.sizeToScene(); // Uten denne linjen skapes unødvendige marginer. Bug?
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
 	
 	public static void main(String[] args) {
@@ -43,7 +51,3 @@ public class SjakkBrett extends Application {
     }
 		
 }
-
-
-	
-
