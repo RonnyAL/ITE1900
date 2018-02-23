@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 public class CircleText extends Application {
 
 	private DoubleProperty fontSize = new SimpleDoubleProperty(10);
-	
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -30,11 +30,8 @@ public class CircleText extends Application {
 		Pane pane = new Pane();
 		Group group = new Group();
 		Scene scene = new Scene(pane, 400, 400);
-		
-		
-		Font font = Font.font("Times New Roman", FontWeight.BOLD, FontPosture.REGULAR, 35);
 
-		String wrapText = "DETTE ER EN TEKST";
+		String wrapText = "DETTE ER EN TEKST...";
 
 		Circle circle = new Circle(100);
 		circle.setFill(Color.BLANCHEDALMOND);
@@ -42,66 +39,67 @@ public class CircleText extends Application {
 
 		pane.getChildren().add(circle);
 
-		double rotation = -45;
-		
-//		Foreløpig ikke i bruk:
-//		double rotationAdd = 360.0 / wrapText.replaceAll(" ", "").length();
+		Font font = Font.font("Times New Roman", FontWeight.BOLD, FontPosture.REGULAR, circle.getRadius() / 6);
+
+		double rotation = 0;
+
+		Text tempString = new Text(wrapText.replaceAll(" ", ""));
+		Group tempGroup = new Group();
+		tempString.setFont(font);
+
+		tempGroup.getChildren().add(tempString);
+		double stringPxLength = tempGroup.getLayoutBounds().getWidth();
+		int stringLength = wrapText.replaceAll(" ", "").length();
+
+		double totalPadding = Math.PI * 2 * circle.getRadius() - stringPxLength;
+		stringPxLength += totalPadding;
+
+		double paddingPerLetter = totalPadding / (stringLength);
+		System.out.println(stringLength);
+		System.out.println(stringPxLength);
+		System.out.println(paddingPerLetter);
+
+		double rotationSum = 0;
 
 		for (char c : wrapText.toCharArray()) {
 			if (!Character.isWhitespace(c)) {
 				Text t = new Text(Character.toString(c));
 
 				t.setFont(font);
-				
-				//Binder font-størrelse til sirekelns radius / 6
+
+				// Binder font-størrelse til sirekelns radius / 6
 				fontSize.bind(circle.radiusProperty().divide(6));
 				t.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
-				
+
 				t.setX(pane.getWidth() / 2);
-				t.setY(pane.getHeight() / 2 );
+				t.setY(pane.getHeight() / 2);
 
 				Rotate rot = new Rotate(rotation, pane.getWidth() / 2, pane.getHeight() / 2 - circle.getRadius());
 
-				t.yProperty().bind(circle.centerYProperty()
-						.add(circle.radiusProperty().multiply(Math.sin(Math.toRadians(rotation)))));
+				t.yProperty().bind(circle.centerYProperty().subtract(circle.radiusProperty()));
 
-				t.xProperty().bind(circle.centerXProperty()
-						.add(circle.radiusProperty().multiply(Math.cos(Math.toRadians(rotation)))));
-				
-				
-				
+				t.xProperty().bind(pane.widthProperty().divide(2));
+
 				rot.pivotXProperty().bind(circle.centerXProperty());
 				rot.pivotYProperty().bind(circle.centerYProperty());
 
 				t.getTransforms().add(rot);
-				
+
 				group.getChildren().add(t);
-				
-				rotation += 12; // Verdien som gir best resultat med gjeldende kode
+
+				double arcLength = paddingPerLetter + t.getLayoutBounds().getWidth();
+
+				double rotationAdd = arcLength / circle.getRadius();
+
+				rotation += Math.toDegrees(rotationAdd);
+
+				rotationSum += Math.toDegrees(rotationAdd);
 
 			}
 
 		}
 
-		Text test = new Text();
-		Text test2 = new Text();
-
-		test.setY(200);
-		test.xProperty().bind(circle.centerXProperty());
-		;
-		test.yProperty().bind(circle.centerYProperty());
-		;
-
-		test2.xProperty().bind(circle.centerXProperty());
-		;
-		test2.yProperty().bind(circle.centerYProperty().add(15));
-		;
-
-		test.textProperty().bind(Bindings.convert(circle.centerXProperty()));
-		test2.textProperty().bind(Bindings.convert(circle.centerYProperty()));
-
-		group.getChildren().add(test);
-		group.getChildren().add(test2);
+		System.out.println(rotationSum);
 
 		circle.centerXProperty().bind(pane.widthProperty().divide(2));
 		circle.centerYProperty().bind(pane.heightProperty().divide(2));
@@ -110,8 +108,6 @@ public class CircleText extends Application {
 				.bind(Bindings.min(pane.widthProperty().divide(80), pane.heightProperty().divide(80)));
 		group.getChildren().add(circle);
 		circle.toBack();
-		test.toFront();
-		test2.toFront();
 
 		pane.getChildren().add(group);
 
