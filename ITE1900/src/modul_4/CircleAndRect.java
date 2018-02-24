@@ -4,18 +4,27 @@ import java.util.Random;
 
 import javafx.application.Application;
 import javafx.event.*;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 public class CircleAndRect extends Application {
 
 	private String currentShape;
+	private Ellipse c = new Ellipse();
+	private Rectangle r = new Rectangle();
+
+	private double rWRatio;
+	private double rHRatio;
+	private double rXRatio;
+	private double rYRatio;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -33,16 +42,51 @@ public class CircleAndRect extends Application {
 		BorderPane bp = new BorderPane();
 		bp.setStyle("-fx-background-color: #729cc7;");
 
+		HBox allTxtVBox = new HBox();
+		allTxtVBox.setAlignment(Pos.CENTER);
+		allTxtVBox.setPadding(new Insets(5));
+		allTxtVBox.spacingProperty().bind(centerPane.widthProperty().divide(2));
+
+		Text rectX = new Text();
+		Text rectY = new Text();
+		TextFlow rectXFlow = new TextFlow(new Text("X: "));
+		TextFlow rectYFlow = new TextFlow(new Text("Y: "));
+		rectXFlow.getChildren().add(rectX);
+		rectYFlow.getChildren().add(rectY);
+		VBox rectVTxt = new VBox(new Text("[REKTANGEL]"), rectXFlow, rectYFlow);
+		rectX.textProperty().bindBidirectional(r.xProperty(), new NumberStringConverter());
+		rectY.textProperty().bindBidirectional(r.yProperty(), new NumberStringConverter());
+
+		Text circleX = new Text();
+		Text circleY = new Text();
+		TextFlow circleXFlow = new TextFlow(new Text("X: "));
+		TextFlow circleYFlow = new TextFlow(new Text("Y: "));
+
+		circleXFlow.getChildren().add(circleX);
+		circleYFlow.getChildren().add(circleY);
+		VBox circleVTxt = new VBox(new Text("[SIRKEL]"), circleXFlow, circleYFlow);
+		circleX.textProperty().bindBidirectional(c.centerXProperty(), new NumberStringConverter());
+		circleY.textProperty().bindBidirectional(c.centerYProperty(), new NumberStringConverter());
+
+		rectVTxt.setVisible(false);
+		circleVTxt.setVisible(false);
+
+		allTxtVBox.getChildren().addAll(rectVTxt, circleVTxt);
+
+		allTxtVBox.minWidthProperty().bind(centerPane.widthProperty());
+
+		bp.setTop(allTxtVBox);
+
 		Button btnRed = new Button("Rød");
 
 		btnRed.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (currentShape == "Circle") {
-					Circle c = null;
-					int cIndex = getIndex(centerPane, "Circle");
+				if (currentShape == "Ellipse") {
+					c = null;
+					int cIndex = getIndex(centerPane, "Ellipse");
 					if (cIndex != -1) {
-						c = (Circle) centerPane.getChildren().get(cIndex);
+						c = (Ellipse) centerPane.getChildren().get(cIndex);
 						c.setFill(Color.RED);
 					}
 				} else if (currentShape == "Rectangle") {
@@ -61,11 +105,11 @@ public class CircleAndRect extends Application {
 		btnBlue.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (currentShape == "Circle") {
-					Circle c = null;
-					int cIndex = getIndex(centerPane, "Circle");
+				if (currentShape == "Ellipse") {
+					c = null;
+					int cIndex = getIndex(centerPane, "Ellipse");
 					if (cIndex != -1) {
-						c = (Circle) centerPane.getChildren().get(cIndex);
+						c = (Ellipse) centerPane.getChildren().get(cIndex);
 						c.setFill(Color.BLUE);
 					}
 				} else if (currentShape == "Rectangle") {
@@ -98,7 +142,14 @@ public class CircleAndRect extends Application {
 			@Override
 			public void handle(ActionEvent e) {
 				Random rnd = new Random();
-				Rectangle r = new Rectangle((rnd.nextInt(80 - 50) + 50), rnd.nextInt(80 - 50) + 50);
+				int maxLength = (int) centerPane.getWidth() / 5;
+				int minLength = (int) centerPane.getHeight() / 5;
+
+				rectX.textProperty().unbindBidirectional(r.xProperty());
+				rectY.textProperty().unbindBidirectional(r.yProperty());
+
+				r = new Rectangle((rnd.nextInt(maxLength - minLength) + minLength),
+						rnd.nextInt(maxLength - minLength) + minLength);
 
 				// Fjern rektangel hvis den eksisterer
 				int rIndex = getIndex(centerPane, "Rectangle");
@@ -115,13 +166,24 @@ public class CircleAndRect extends Application {
 				int rYMin = (int) Math.sqrt(Math.pow(r.getWidth(), 2) + Math.pow(r.getHeight(), 2));
 
 				r.setX(rnd.nextInt(rXMax - rXMin) + rXMin);
-				r.setY(rnd.nextInt(rYMax - rYMin) + rYMin);
 
-				double rXRatio = r.getX() / centerPane.getWidth();
-				double rYRatio = r.getY() / centerPane.getHeight();
+				try {
+					r.setY(rnd.nextInt(rYMax - rYMin) + rYMin);
+				} catch (IllegalArgumentException exc) {
+					System.out.println(
+							"Blir ikke kvitt denne feilen. YMin blir på et eller annet vis større enn YMax med enkelte rektangler.");
+					exc.printStackTrace();
+				}
+
+				rXRatio = r.getX() / centerPane.getWidth();
+				rYRatio = r.getY() / centerPane.getHeight();
+				rWRatio = r.getWidth() / centerPane.getWidth();
+				rHRatio = r.getHeight() / centerPane.getHeight();
 
 				r.xProperty().bind(centerPane.widthProperty().multiply(rXRatio));
 				r.yProperty().bind(centerPane.heightProperty().multiply(rYRatio));
+				r.widthProperty().bind(centerPane.widthProperty().multiply(rWRatio));
+				r.heightProperty().bind(centerPane.heightProperty().multiply(rHRatio));
 
 				r.setStrokeWidth(3);
 
@@ -131,15 +193,18 @@ public class CircleAndRect extends Application {
 						r.toFront();
 						r.setStroke(Color.MEDIUMORCHID);
 						currentShape = "Rectangle";
-						int cIndex = getIndex(centerPane, "Circle");
+						int cIndex = getIndex(centerPane, "Ellipse");
 						if (cIndex != -1) {
-							Circle c = (Circle) centerPane.getChildren().get(cIndex);
+							Ellipse c = (Ellipse) centerPane.getChildren().get(cIndex);
 							c.setStroke(null);
 						}
 					}
 				});
 
-				currentShape = "Rectangle";
+				rectX.textProperty().bindBidirectional(r.xProperty(), new NumberStringConverter());
+				rectY.textProperty().bindBidirectional(r.yProperty(), new NumberStringConverter());
+
+				rectVTxt.setVisible(true);
 
 				centerPane.getChildren().add(r);
 				Event.fireEvent(r, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true,
@@ -153,8 +218,13 @@ public class CircleAndRect extends Application {
 			public void handle(ActionEvent e) {
 				int rIndex = getIndex(centerPane, "Rectangle");
 				if (rIndex != -1) {
-					Rectangle r = (Rectangle) centerPane.getChildren().get(rIndex);
+					r = (Rectangle) centerPane.getChildren().get(rIndex);
+
 					r.setRotate(r.getRotate() + 45);
+					if (r.getRotate() == 360) {
+						r.setRotate(0);
+					}
+
 				}
 			}
 		});
@@ -165,24 +235,32 @@ public class CircleAndRect extends Application {
 			@Override
 			public void handle(ActionEvent e) {
 
-				int cIndex = getIndex(centerPane, "Circle");
+				int cIndex = getIndex(centerPane, "Ellipse");
 
 				if (cIndex != -1) {
 					centerPane.getChildren().remove(cIndex);
 				}
 
 				Random rnd = new Random();
-				int cRadius = rnd.nextInt(40 - 25) + 25;
-				Circle c = new Circle(cRadius);
+				int maxRadius = Math.min((int) centerPane.getHeight() / 7, (int) centerPane.getWidth() / 7);
+				int minRadius = Math.min((int) centerPane.getHeight() / 12, (int) centerPane.getWidth() / 12);
 
-				c.setCenterX(c.getRadius() + rnd.nextDouble() * (centerPane.getWidth() - c.getRadius() * 2));
-				c.setCenterY(c.getRadius() + rnd.nextDouble() * (centerPane.getHeight() - c.getRadius() * 2));
+				int cRadius = rnd.nextInt(maxRadius - minRadius) + minRadius;
+
+				circleX.textProperty().unbindBidirectional(c.centerXProperty());
+				circleY.textProperty().unbindBidirectional(c.centerYProperty());
+				c = new Ellipse(cRadius, cRadius);
+
+				c.setCenterX(c.getRadiusX() + rnd.nextDouble() * (centerPane.getWidth() - c.getRadiusX() * 2));
+				c.setCenterY(c.getRadiusY() + rnd.nextDouble() * (centerPane.getHeight() - c.getRadiusY() * 2));
 
 				double cXRatio = c.getCenterX() / centerPane.getWidth();
 				double cYRatio = c.getCenterY() / centerPane.getHeight();
 
 				c.centerXProperty().bind(centerPane.widthProperty().multiply(cXRatio));
 				c.centerYProperty().bind(centerPane.heightProperty().multiply(cYRatio));
+				c.radiusXProperty().bind(centerPane.widthProperty().multiply(c.getRadiusX() / centerPane.getWidth()));
+				c.radiusYProperty().bind(centerPane.heightProperty().multiply(c.getRadiusY() / centerPane.getHeight()));
 
 				c.setStrokeWidth(3);
 
@@ -191,7 +269,7 @@ public class CircleAndRect extends Application {
 					public void handle(MouseEvent t) {
 						c.toFront();
 						c.setStroke(Color.MEDIUMORCHID);
-						currentShape = "Circle";
+						currentShape = "Ellipse";
 						int rIndex = getIndex(centerPane, "Rectangle");
 						if (rIndex != -1) {
 							Rectangle r = (Rectangle) centerPane.getChildren().get(rIndex);
@@ -199,6 +277,11 @@ public class CircleAndRect extends Application {
 						}
 					}
 				});
+
+				circleX.textProperty().bindBidirectional(c.centerXProperty(), new NumberStringConverter());
+				circleY.textProperty().bindBidirectional(c.centerYProperty(), new NumberStringConverter());
+
+				circleVTxt.setVisible(true);
 
 				centerPane.getChildren().add(c);
 				Event.fireEvent(c, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY, 1, true,
@@ -211,10 +294,10 @@ public class CircleAndRect extends Application {
 		bottomGroup.setAlignment(Pos.CENTER);
 		bp.setBottom(bottomGroup);
 
-		Scene scene = new Scene(bp, 350, 250);
+		Scene scene = new Scene(bp, 450, 350);
 		primaryStage.setTitle("Sirkel og rektangel");
-		primaryStage.setMinHeight(250);
-		primaryStage.setMinWidth(350);
+		primaryStage.setMinWidth(450);
+		primaryStage.setMinHeight(350);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -226,12 +309,12 @@ public class CircleAndRect extends Application {
 
 	final int getIndex(Pane pane, String type) {
 
-		if (type == "Circle") {
+		if (type == "Ellipse") {
 			try {
 
-				if (pane.getChildren().get(0) instanceof Circle) {
+				if (pane.getChildren().get(0) instanceof Ellipse) {
 					return 0;
-				} else if (pane.getChildren().get(1) instanceof Circle) {
+				} else if (pane.getChildren().get(1) instanceof Ellipse) {
 					return 1;
 				}
 			} catch (IndexOutOfBoundsException exc) {
