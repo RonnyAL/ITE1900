@@ -1,20 +1,15 @@
 package modul_4;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.layout.*;
+import javafx.scene.shape.*;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -76,6 +71,8 @@ class PendulumPane extends Pane {
 	Circle circle = new Circle();
 	Circle anchor = new Circle();
 	Line line = new Line();
+	Text tLVar = new Text();
+	Timeline animation;
 	
 
 	
@@ -87,9 +84,6 @@ class PendulumPane extends Pane {
 		anchor.centerYProperty().bind(heightProperty().divide(8));
 
 		circle.radiusProperty().bind(Bindings.min(heightProperty().divide(20), widthProperty().divide(20)));
-		circle.centerXProperty().bind(widthProperty().divide(2));
-		circle.centerYProperty().bind(heightProperty().subtract(heightProperty().divide(6)));
-		
 		
 		
 		line.setStrokeWidth(3);
@@ -102,18 +96,24 @@ class PendulumPane extends Pane {
 		line.endXProperty().bind(circle.centerXProperty());
 		line.endYProperty().bind(circle.centerYProperty());
 		
-		Text t1 = new Text("Direction|angle: ");
-		Text t2 = new Text();
-		Text t3 = new Text();
-		TextFlow tf = new TextFlow();
+		Text tAText = new Text("Angle: ");
+		Text tAVar = new Text();
+		TextFlow tfA = new TextFlow();
 		
-		t3.textProperty().bind(curAngle.asString());
+		tAVar.textProperty().bind(curAngle.asString());
+		tfA.getChildren().addAll(tAText, tAVar);
 		
-		tf.getChildren().addAll(t1, t2, t3);
+		Text tLText = new Text("Linelength: ");
+		tLVar = new Text();
+		tLVar.setText(String.valueOf(lineLength));
 		
-		getChildren().addAll(line, circle, anchor, tf);
+		TextFlow tfL = new TextFlow(tLText, tLVar);
 		
-		Timeline animation = new Timeline(new KeyFrame(Duration.millis(25), e -> {
+		VBox textStuff = new VBox(tfA, tfL);
+		
+		getChildren().addAll(line, circle, anchor, textStuff);
+		
+		animation = new Timeline(new KeyFrame(Duration.millis(40), e -> {
 			next();
 		}));
 		animation.setCycleCount(Timeline.INDEFINITE);
@@ -144,26 +144,35 @@ class PendulumPane extends Pane {
 		
 		
 		if (direction == 'R' && curAngle.doubleValue() > 60) {
-			curAngle.set(curAngle.doubleValue()-1);
+			curAngle.set(curAngle.doubleValue()-0.4);
 			direction = 'R';
 			if (curAngle.doubleValue() == 60)
 				direction = 'L';
 		} else {
-			curAngle.set(curAngle.doubleValue()+1);
+			curAngle.set(curAngle.doubleValue()+0.4);
 			direction = 'L';
 			if (curAngle.doubleValue() == 120)
 				direction = 'R';
 		}
 		
-		Point2D cPos = new Point2D(circle.getCenterX(), circle.getCenterY());
+		Point2D cPos = new Point2D(getWidth()/2, Math.min(getWidth()-getWidth()/6, getHeight()-getHeight()/6));
 		Point2D aPos = new Point2D(anchor.getCenterX(), anchor.getCenterY());
-//		lineLength = cPos.distance(aPos);
-		lineLength = 247.91666666666669;
-		
-		
-		circle.centerXProperty().bind(widthProperty().divide(2).add(anchor.centerXProperty().add(lineLength).multiply(Math.cos(Math.toRadians(curAngle.doubleValue())))));
-		circle.centerYProperty().bind(heightProperty().divide(6).add(anchor.centerYProperty().add(lineLength).multiply(Math.sin(Math.toRadians(curAngle.doubleValue())))));
+		lineLength = cPos.distance(aPos);
 
+		tLVar.setText(String.valueOf(animation.getRate()));
+		
+		animation.setRate(animation.getRate() +0.1);
+
+
+		
+//		circle.centerXProperty().bind(anchor.centerXProperty().add(lineLength).multiply(Math.cos(Math.toRadians(curAngle.doubleValue()))));
+//		circle.centerYProperty().bind(anchor.centerYProperty().add(lineLength).multiply(Math.sin(Math.toRadians(curAngle.doubleValue()))));
+
+		
+		circle.setCenterX(anchor.getCenterX()+lineLength*Math.cos(Math.toRadians(curAngle.doubleValue())));
+		circle.setCenterY(anchor.getCenterY()+lineLength*Math.sin(Math.toRadians(curAngle.doubleValue())));
+		
+		
 		
 		
 		
