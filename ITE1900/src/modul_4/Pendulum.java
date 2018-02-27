@@ -166,7 +166,7 @@ class PendulumPane extends Pane {
 
 		
 //		circle.centerXProperty().bind(anchor.centerXProperty().add(lineLength).multiply(Math.cos(Math.toRadians(curAngle.doubleValue()))));
-//		circle.centerYProperty().bind(anchor.centerYProperty().add(lineLength).multiply(Math.sin(Math.toRadians(curAngle.doubleValue()))));
+//		ckklircle.centerYProperty().bind(anchor.centerYProperty().add(lineLength).multiply(Math.sin(Math.toRadians(curAngle.doubleValue()))));
 
 		
 		circle.setCenterX(anchor.getCenterX()+lineLength*Math.cos(Math.toRadians(curAngle.doubleValue())));
