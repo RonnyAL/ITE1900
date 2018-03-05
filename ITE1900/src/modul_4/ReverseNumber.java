@@ -26,7 +26,7 @@ public class ReverseNumber extends Application {
 		gridPane.setVgap(10);
 
 		TextField input = new TextField();
-		input.setPromptText("Oppgi ett heltall");
+		input.setPromptText("Oppgi et heltall");
 
 		TextField reverse = new TextField();
 		reverse.setStyle("-fx-opacity: 1.0;");
