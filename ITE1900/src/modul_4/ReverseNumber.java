@@ -1,18 +1,40 @@
 package modul_4;
 
-import javafx.application.*;
-import javafx.beans.value.*;
-import javafx.scene.control.*;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
 public class ReverseNumber extends Application {
 
-	public static final String INT_REGEX = "-?([1-9][0-9]*)?";
+	public static int reversedInt;
+
+	// Implementerer maks lengde på input for å hindre for store integers.
+	public static int maxLength = 10;
+
+	public static final String INT_REGEX = "([1-9][0-9]*)?";
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public void reverseIntegers(int value) {
+		reversedInt *= 10;
+
+		if (value < 10) {
+			reversedInt += value;
+			return;
+		} else {
+			reversedInt += value % 10;
+			reverseIntegers(value / 10);
+		}
 	}
 
 	@Override
@@ -25,47 +47,60 @@ public class ReverseNumber extends Application {
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
 
-		TextField input = new TextField();
-		input.setPromptText("Oppgi et heltall");
+		TextField inputTF = new TextField();
+		inputTF.setPromptText("Oppgi et heltall");
 
-		TextField reverse = new TextField();
-		reverse.setStyle("-fx-opacity: 1.0;");
-		reverse.setPromptText("Reversert tall vises her");
-		reverse.setDisable(true);
+		TextField reverseTF = new TextField();
+		reverseTF.setDisable(true);
+		reverseTF.setStyle("-fx-opacity: 1.0;");
+		reverseTF.setPromptText("Reversert tall vises her");
 
 		gridPane.add(new Label("Heltall: "), 0, 0);
-		gridPane.add(input, 1, 0);
+		gridPane.add(inputTF, 1, 0);
 		gridPane.add(new Label("Reversert: "), 0, 1);
-		gridPane.add(reverse, 1, 1);
+		gridPane.add(reverseTF, 1, 1);
 
 		dialog.getDialogPane().setContent(gridPane);
 
-		Platform.runLater(() -> input.requestFocus());
+		Platform.runLater(() -> inputTF.requestFocus());
 
-		input.textProperty().addListener(new ChangeListener<String>() {
+		inputTF.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				System.out.println(newValue);
 
-				// Denne sørger for at "0-" blir "-". Fant ingen bedre løsning.
-				if (newValue.equals("0-")) {
-					input.setText("-");
+				if (inputTF.getLength() >= maxLength) {
+					inputTF.setText(oldValue);
+				}
+
+				// All tekst ble fjernet.
+				if (newValue.isEmpty()) {
+					reverseTF.setText("");
 					return;
 				}
 
 				if (!newValue.matches(INT_REGEX)) {
 					try {
-						input.setText(String.valueOf(Integer.parseInt(oldValue)));
+						inputTF.setText(String.valueOf(Integer.parseInt(oldValue)));
 					} catch (NumberFormatException e) {
 						if (newValue.equals("0")) {
-							input.setText("0");
+							inputTF.setText("0");
 						} else {
-							input.setText(oldValue);
+							inputTF.setText(oldValue);
 						}
 					}
 
 				}
-				reverse.setText(new StringBuilder(input.getText()).reverse().toString());
+
+				if (newValue != "" && !newValue.isEmpty()) {
+					try {
+						reversedInt = 0;
+						reverseIntegers(Integer.parseInt(inputTF.getText()));
+					} catch (NumberFormatException e) {
+						reverseTF.setText(inputTF.getText());
+					}
+					reverseTF.setText(String.valueOf(reversedInt));
+				}
+
 			}
 
 		});
