@@ -1,6 +1,7 @@
 package modul_5;
 
 import javafx.application.Application;
+import javafx.beans.value.*;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -105,15 +106,37 @@ public class NumConverter extends Application {
 		output.setDisable(true);
 		output.setStyle("-fx-opacity: 1.0;");
 		output.setScaleX(0.95);
-		
-		output.textProperty().bind(input.textProperty());
+	
 		
 		VBox content = new VBox(tabPane, input, output);
 		content.setSpacing(15);
 		
 		pane.getChildren().add(content);
 
-
+		input.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				String curTab = tabPane.getSelectionModel().getSelectedItem().getText();
+				
+				if (!newValue.matches("[0-9]*")) {
+					System.out.println("TEST");
+					output.setText("");
+					input.setText("");
+				} else if (newValue.length() == 0) {
+					output.setText("");
+				} else if (curTab == "Decimal to binary") {
+					output.setText(dec2Bin(Integer.parseInt(input.getText())));
+				} else if (curTab == "Decimal to hex") {
+					output.setText(dec2Hex(Integer.parseInt(input.getText())));
+				} else if (curTab == "Binary to decimal") {
+					output.setText(String.valueOf(bin2Dec(input.getText())));
+				} else if (curTab == "Hex to decimal") {
+					output.setText(String.valueOf(hex2Dec(input.getText())));
+				}
+				
+				
+			}
+		});
 		
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
