@@ -15,13 +15,15 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-
 public class TowerOfHanoi extends Application {
 
 	private static int moveCounter;
-	private final String VALID_REGEX = "\\d{0,10}";
+	private static Text footer;
+	private static ProgressBar diskProg;
+	private final String VALID_REGEX = "\\d{0,6}";
 	private boolean validInput = false;
 	private final int maxDisks = 20;
+	private final int maxMoveLength = 9;
 	private static final StringBuilder sb = new StringBuilder();
 	private static final String[] superString = { "\\u2070", "\\u00B9", "\\u00B2", "\\u00B3", "\\u2074", "\\u2075",
 			"\\u2076", "\\u2077", "\\u2078", "\\u2079" };
@@ -29,10 +31,6 @@ public class TowerOfHanoi extends Application {
 	private static BigInteger movesRequired;
 	private static String[] complaints = { "No thanks.", "Yuck!", "F*ck that.", "You sadist.",
 			"I'm calling the police.", "Ain't nobody got time for that!", "Do it yourself, man!" };
-	public static TextField userInput;
-	public static char fromTower = 'A';
-	public static char toTower = 'B';
-	public static char auxTower = 'C';
 	private static ReadOnlyDoubleWrapper progress = new ReadOnlyDoubleWrapper();
 
 	public static void main(String[] args) {
@@ -46,11 +44,15 @@ public class TowerOfHanoi extends Application {
 
 	public static void moveDisks(int n, char fromTower, char toTower, char auxTower) {
 
-		if (n == 1) { // Stopping condition
+		if (moveCounter == movesRequired.intValue() - 1) {
+			footer.setText("Writing result to screen..."); // Fungerer ikke alltid :(
+		}
+
+		if (n == 1) {
 			moveCounter += 1;
 			sb.append(String.format(Locale.ROOT, "\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n,
 					fromTower, toTower));
-			progress.set(moveCounter * 1.0 /movesRequired.doubleValue());
+			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 		}
 
 		else {
@@ -58,7 +60,7 @@ public class TowerOfHanoi extends Application {
 			moveCounter += 1;
 			sb.append(String.format(Locale.ROOT, "\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n,
 					fromTower, toTower));
-			progress.set(moveCounter * 1.0 /movesRequired.doubleValue());
+			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 			moveDisks(n - 1, auxTower, toTower, fromTower);
 		}
 	}
@@ -66,15 +68,17 @@ public class TowerOfHanoi extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		userInput = new TextField();
+		TextField userInput = new TextField();
 		userInput.setPromptText("Number of disks (1-" + maxDisks + ")");
 		Button findMoves = new Button("Find moves");
+		findMoves.setDefaultButton(true);
+		findMoves.setDisable(true);
 		HBox input = new HBox(userInput, findMoves);
 
 		TextArea output = new TextArea();
 		output.setEditable(false);
 
-		Text footer = new Text();
+		footer = new Text();
 
 		VBox content = new VBox(input, output, footer);
 		content.setPadding(new Insets(10, 10, 10, 10));
@@ -94,7 +98,6 @@ public class TowerOfHanoi extends Application {
 				.bind(output.widthProperty().multiply(0.8).subtract(content.spacingProperty().divide(2)));
 		footer.wrappingWidthProperty().bind(output.widthProperty());
 
-
 		findMoves.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -108,26 +111,27 @@ public class TowerOfHanoi extends Application {
 					output.setDisable(true);
 					output.setText("");
 					userInput.getScene().setCursor(Cursor.WAIT);
-					footer.setText("Working...");
+					footer.setText("Finding moves...");
 					long startTime = System.currentTimeMillis();
-					
+					diskProg = new ProgressBar();
+
 					Task<Void> diskTask = new Task<Void>() {
 						@Override
 						protected Void call() {
-							progress.addListener((obs, oldProgress, newProgress) -> 
-							updateProgress(newProgress.doubleValue(), 1));
+							progress.addListener(
+									(obs, oldProgress, newProgress) -> updateProgress(newProgress.doubleValue(), 1));
 							moveDisks(Integer.parseInt(userInput.getText()), 'A', 'B', 'C');
 							return null;
 						}
 
 					};
-					
-					ProgressBar diskProg = new ProgressBar();
+
 					diskProg.progressProperty().bind(diskTask.progressProperty());
 					pane.getChildren().add(diskProg);
-					diskProg.layoutXProperty().bind(pane.widthProperty().divide(2).subtract(diskProg.widthProperty().divide(2)));
+					diskProg.layoutXProperty()
+							.bind(pane.widthProperty().divide(2).subtract(diskProg.widthProperty().divide(2)));
 					diskProg.layoutYProperty().bind(pane.heightProperty().divide(2));
-					
+
 					diskTask.setOnScheduled(s -> {
 						diskProg.setOpacity(1);
 					});
@@ -141,11 +145,7 @@ public class TowerOfHanoi extends Application {
 						output.setText(sb.toString());
 						userInput.getParent().getParent().getScene().setCursor(Cursor.DEFAULT);
 						double duration = (endTime - startTime);
-						System.out.println("her");
-						
-						
-						
-						
+
 						if (duration < 100) {
 							footer.setText(String.format(Locale.ROOT, "%s move%s performed in %.0f ms.", moveCounter,
 									userInput.getText().equals("1") ? "" : "s", duration));
@@ -155,13 +155,10 @@ public class TowerOfHanoi extends Application {
 						}
 
 					});
-					
-					
+
 					Thread th = new Thread(diskTask);
 					th.setDaemon(true);
 					th.start();
-
-//					new Thread(diskTask).start();
 
 				} else {
 					userInput.setPromptText("Please choose a positive integer!");
@@ -175,6 +172,7 @@ public class TowerOfHanoi extends Application {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
+				int rIndex = -1;
 				userInput.setPromptText("Number of disks (1-" + maxDisks + ")");
 
 				if (newValue.isEmpty() || newValue.equals("0")) {
@@ -185,15 +183,11 @@ public class TowerOfHanoi extends Application {
 				} else if (!newValue.matches(VALID_REGEX)) {
 					userInput.setText(oldValue);
 				} else {
-					try {
-						BigInteger bigOne = new BigInteger("1");
-						BigInteger bigTwo = new BigInteger("2");
-						movesRequired = bigTwo.pow(Integer.parseInt(userInput.getText()));
-						movesRequired = movesRequired.subtract(bigOne);
-					} catch (NumberFormatException e) {
-						// Skal ikke forekomme, men for sikkerhets skyld:
-						System.out.println(e.getStackTrace());
-					}
+
+					BigInteger bigOne = new BigInteger("1");
+					BigInteger bigTwo = new BigInteger("2");
+					movesRequired = bigTwo.pow(Integer.parseInt(userInput.getText()));
+					movesRequired = movesRequired.subtract(bigOne);
 
 					if (Integer.parseInt(newValue) <= maxDisks) {
 						userInput.setStyle("");
@@ -203,11 +197,13 @@ public class TowerOfHanoi extends Application {
 						userInput.setStyle("-fx-text-fill: #999;");
 						validInput = false;
 						findMoves.setDisable(true);
+						Random r = new Random();
+						rIndex = r.nextInt(complaints.length);
 					}
 
-					String str = movesRequired.toString();
+					String moveStr = String.format("%,d", movesRequired.intValue()).replaceAll(",", " ");
 
-					if (movesRequired.toString().length() > 9) {
+					if (movesRequired.toString().length() > maxMoveLength) {
 						int power = movesRequired.toString().length() - 1;
 						ArrayList<Integer> powerDigits = new ArrayList<Integer>();
 
@@ -218,25 +214,17 @@ public class TowerOfHanoi extends Application {
 
 						Collections.reverse(powerDigits);
 
-						str = movesRequired.toString().substring(0, 1) + "." + movesRequired.toString().substring(2, 6)
-								+ "×10";
+						moveStr = movesRequired.toString().substring(0, 1) + "."
+								+ movesRequired.toString().substring(2, 6) + "×10";
 						for (int i : powerDigits) {
-							str += Character.toString(superScript[i]);
+							moveStr += Character.toString(superScript[i]);
 						}
 
-						Random r = new Random();
-						int rIndex = r.nextInt(complaints.length);
-
-						footer.setText(String.format(Locale.ROOT, "%s disk%s would require %s move%s. %s",
-								userInput.getText(), userInput.getText().equals("1") ? "" : "s", str,
-								userInput.getText().equals("1") ? "" : "s", complaints[rIndex]));
-
-					} else {
-						footer.setText(String.format("%s disk%s will require %d move%s.", userInput.getText(),
-								userInput.getText().equals("1") ? "" : "s", movesRequired,
-								movesRequired.toString().equals("1") ? "" : "s"));
 					}
 
+					footer.setText(String.format("%s disk%s %s require %s move%s.%s", newValue,
+							newValue.equals("1") ? "" : "s", Integer.parseInt(newValue) > maxDisks ? "would" : "will",
+							moveStr, newValue.equals("1") ? "" : "s", rIndex == -1 ? "" : " " + complaints[rIndex]));
 				}
 
 			}
@@ -262,6 +250,7 @@ public class TowerOfHanoi extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.sizeToScene();
 		primaryStage.show();
+		primaryStage.setResizable(false);
 		primaryStage.setMinWidth(primaryStage.getWidth());
 	}
 }
