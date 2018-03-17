@@ -56,7 +56,7 @@ public class TowerOfHanoi extends Application {
 		else {
 			moveDisks(n - 1, fromTower, auxTower, toTower);
 			moveCounter += 1;
-			SB.append(String.format(Locale.ROOT, "\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n,
+			SB.append(String.format("\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n,
 					fromTower, toTower));
 			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 			moveDisks(n - 1, auxTower, toTower, fromTower);
