@@ -48,17 +48,18 @@ public class TowerOfHanoi extends Application {
 
 		if (n == 1) {
 			moveCounter += 1;
+			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 			SB.append(String.format("\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n, fromTower,
 					toTower));
-			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
+			
 		}
 
 		else {
 			moveDisks(n - 1, fromTower, auxTower, toTower);
 			moveCounter += 1;
+			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 			SB.append(String.format("\r\nMove number %d: \t Move disk %s from %s to %s", moveCounter, n,
 					fromTower, toTower));
-			progress.set(moveCounter * 1.0 / movesRequired.doubleValue());
 			moveDisks(n - 1, auxTower, toTower, fromTower);
 		}
 	}
@@ -87,6 +88,7 @@ public class TowerOfHanoi extends Application {
 		content.setPadding(new Insets(10, 10, 10, 10));
 		content.setSpacing(10);
 		Pane pane = new Pane(content);
+		ProgressBar diskProg = new ProgressBar();
 
 		input.setPrefWidth(400);
 
@@ -111,12 +113,11 @@ public class TowerOfHanoi extends Application {
 
 					userInput.setDisable(true);
 					findMoves.setDisable(true);
-					output.setDisable(true);
+					output.setDisable(false);
 					output.setText("");
 					userInput.getScene().setCursor(Cursor.WAIT);
 					footer.setText("Finding moves...");
 					long startTime = System.currentTimeMillis();
-					ProgressBar diskProg = new ProgressBar();
 
 					Task<Void> diskTask = new Task<Void>() {
 						@Override
@@ -124,13 +125,15 @@ public class TowerOfHanoi extends Application {
 							progress.addListener(
 									(obs, oldProgress, newProgress) -> updateProgress(newProgress.doubleValue(), 1));
 							moveDisks(Integer.parseInt(userInput.getText()), 'A', 'B', 'C');
+							
 							return null;
 						}
 
 					};
 
-					diskProg.progressProperty().bind(diskTask.progressProperty());
-					pane.getChildren().add(diskProg);
+					
+					if (!pane.getChildren().contains(diskProg))
+						pane.getChildren().add(diskProg);
 					diskProg.layoutXProperty()
 							.bind(pane.widthProperty().divide(2).subtract(diskProg.widthProperty().divide(2)));
 					diskProg.layoutYProperty().bind(pane.heightProperty().divide(2));
@@ -148,19 +151,22 @@ public class TowerOfHanoi extends Application {
 						output.setText(SB.toString());
 						userInput.getParent().getParent().getScene().setCursor(Cursor.DEFAULT);
 						double duration = (endTime - startTime);
-
+						
+						String moveCountStr = String.format("%,d", moveCounter).replaceAll(", ", " ");
+						
 						if (duration < 100) {
-							footer.setText(String.format(Locale.ROOT, "%s move%s performed in %.0f ms.", moveCounter,
+							footer.setText(String.format("%s move%s performed in %.0f ms.", moveCountStr,
 									userInput.getText().equals("1") ? "" : "s", duration));
 						} else {
-							footer.setText(String.format(Locale.ROOT, "%s move%s performed in %.2f seconds.",
-									moveCounter, userInput.getText().equals("1") ? "" : "s", duration / 1000.0));
+							footer.setText(String.format("%s move%s performed in %.2f seconds.",
+									moveCountStr, userInput.getText().equals("1") ? "" : "s", duration / 1000.0));
 						}
 
 					});
 
 					Thread th = new Thread(diskTask);
 					th.setDaemon(true);
+					diskProg.progressProperty().bind(diskTask.progressProperty());
 					th.start();
 
 				} else {
