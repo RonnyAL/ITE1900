@@ -9,7 +9,7 @@ public class AccountThreads {
 	private int accountIndex;
 	private int maxTransferAmount;
 	private Random random;
-
+//
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
