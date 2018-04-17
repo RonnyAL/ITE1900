@@ -15,7 +15,7 @@ class Account {
 	}
 
 	
-	private void withdraw(int amount) {
+	public void withdraw(int amount) {
 		
 		lock.lock();
 
@@ -31,7 +31,7 @@ class Account {
 			
 	}
 	
-	private void deposit(double amount) {
+	public void deposit(double amount) {
 		lock.lock();
 		
 		try {

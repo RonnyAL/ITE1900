@@ -1,6 +1,7 @@
 package modul_6;
 
-import java.util.concurrent.locks.Lock;
+import java.util.ArrayList;
+import java.util.concurrent.locks.*;
 
 public class Bank {
 	
@@ -10,7 +11,7 @@ public class Bank {
 	private long transactionCount;
 	private int deviationCount;
 	private int initialBalance;
-	private Account[] accounts;
+	ArrayList<Account> accounts = new ArrayList<Account>();
 	private boolean debug;
 	private int testCount;
 
@@ -19,11 +20,36 @@ public class Bank {
 //
 	}
 	
+	Bank(int accountAmount, int initialBalance, boolean debug) {
+		testCount = 0;
+		transactionCount = 0;
+		lock = new ReentrantLock();
+		for (int i = 0; i < accountAmount; i++) {
+			accounts.add(new Account(i, initialBalance));
+		}
+	}
+	
 	public void transfer(int from, int to, int amount) {
+		transactionCount += 1;
+		lock.lock();
+		if (transactionCount % TO_STRING_FREQUENCY == 0)
+			toString();
+		if (transactionCount % TEST_FREQUENCY == 0)
+			test();
+		lock.unlock();
+		accounts.get(from).withdraw(amount);
+		accounts.get(to).deposit(amount);
 		
 	}
 	
 	public void test() {
+		testCount += 1;
+		int actualAmount = 0;
+		for (int i = 0; i < accounts.size(); i++) {
+			actualAmount += accounts.get(i).getBalance();
+		}
+		boolean error = (actualAmount == (accounts.size() * initialBalance));
+		// TODO: Hva skal denne egentlig gjøre??
 		
 	}
 	
@@ -36,15 +62,15 @@ public class Bank {
 	}
 	
 	public int numberOfAccounts() {
-		return 0;
+		return accounts.size();
 	}
 	
 	public long getTransactionCount() {
-		return 0L;
+		return transactionCount;
 	}
 	
 	public int getDeviationCount() {
-		return 0;
+		return deviationCount;
 	}
 	
 	public double getErrorPercentage() {
