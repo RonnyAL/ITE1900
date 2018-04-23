@@ -13,6 +13,7 @@ public class BankTest {
 		
 		for (int i = 0; i < ACCOUNT_AMOUNT; i++) {
 			AccountThreads t = new AccountThreads(b, i, INITIAL_BALANCE, DEBUG);
+			System.out.println(t.getName());
 			t.run();
 		}
 		

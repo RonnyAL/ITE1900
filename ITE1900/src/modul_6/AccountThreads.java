@@ -8,7 +8,7 @@ public class AccountThreads extends Thread {
 	private boolean debug;
 	private int accountIndex;
 	private int maxTransferAmount;
-	private Random random;
+	private Random random = new Random();
 	private static final int REPS = 1000;
 	//
 
@@ -27,14 +27,17 @@ public class AccountThreads extends Thread {
 	public void run() {
 		int ms = debug ? 2 : 2 + random.nextInt(14);
 		int amount;
+		System.out.println("hei");
 		
 		while(true) {
 			try {
 				amount = random.nextInt(maxTransferAmount);
 				bank.accounts.get(accountIndex).withdraw(amount);
 				bank.accounts.get(random.nextInt(bank.accounts.size()+1)).deposit(amount);;
+				System.out.println(bank.accounts.get(accountIndex));
+				System.out.println(bank.accounts.get(accountIndex).getBalance());
 			} catch (Exception e) {
-				
+				System.out.println(e.getMessage());
 			}
 		}
 
