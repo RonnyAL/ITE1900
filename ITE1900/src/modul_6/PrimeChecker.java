@@ -36,7 +36,7 @@ public class PrimeChecker {
 
 }
 
-
+//
 class PrimeTask implements Runnable {
 	private long number;
 	private long startValue;
